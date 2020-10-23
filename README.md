@@ -1,6 +1,12 @@
-1. composer i
-2. npm i
-3. php artisan key:generate
-4. php art jwt:secret
+1. create .env and set APP_URL
+2. composer i
+3. npm i
+4. php artisan key:generate
+5. php artisan storage:link
+4. php artisan jwt:secret
 5. php artisan migrate --seed
-6. npn run watch
+6. npm run watch
+
+User:
+admin@app.com
+password
