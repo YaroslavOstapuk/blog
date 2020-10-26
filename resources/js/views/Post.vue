@@ -41,13 +41,13 @@ export default {
         this.items[1].text = slug
         const post = await this.fetchPost(slug)
         this.post = post.data
-        this.loading = false,
+        this.loading = false
         this.buildOembed()
     },
     methods: {
         ...mapActions(['fetchPost']),
         buildOembed() {
-            setTimeout(function(scope) {
+            setTimeout(function() {
                 document.querySelectorAll( 'oembed[url]' ).forEach( element => {
                     const anchor = document.createElement( 'a' );
 

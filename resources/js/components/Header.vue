@@ -7,7 +7,7 @@
                 <b-button v-if="!currentUser" v-b-modal.modal-1 class="header-link">Log in</b-button>
                 <div class="control-navbar" v-else>
                     <router-link to="/admin" exact class="header-link dashboard">Dashboard</router-link>
-                    <b-button @click="logout" class="header-link">Log out</b-button>
+                    <b-button @click="removeUser" class="header-link">Log out</b-button>
                 </div>
                 <Login/>
             </b-navbar-nav>
@@ -16,18 +16,23 @@
 </template>
 <script>
 import Login from '../components/auth/Login'
+import { mapActions, mapGetters } from 'vuex'
 
 export default {
     methods: {
-        logout() {
-            this.$store.commit('logout')
-            this.$router.push('/')
+        ...mapActions(['logout']),
+        async removeUser() {
+            let logout = await this.logout()
+            if (logout) {
+                this.$toast.open(logout.message);
+                if (this.$route.path != '/') {
+                    this.$router.push('/');
+                }
+            }
         }
     },
     computed: {
-        currentUser() {
-            return this.$store.getters.currentUser
-        }
+        ...mapGetters(['currentUser'])
     },
     components: {
         Login

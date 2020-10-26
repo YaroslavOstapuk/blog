@@ -70,14 +70,13 @@ export default {
         },
         async deletePost(slug) {
             this.loading = true
-            if (await this.destroyPost(slug)) {
+            let destroy = await this.destroyPost(slug)
+            if (destroy) {
                 this.posts = await this.fetchPosts(this.per_page)
+                this.$toast.open(destroy.message);
             }
-            this.$toast.open('Post successfully deleted!');
             this.loading = false
         }
     }
 }
 </script>
-<style>
-</style>

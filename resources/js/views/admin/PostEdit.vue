@@ -20,7 +20,7 @@
                     <span v-if="errors.title" class="error">{{ errors.title[0] }}</span>
 
                     <div>
-                        <ckeditor :editor="editor" v-model="post.text" :config="editorConfig"></ckeditor>
+                        <editor v-model="post.text"></editor>
                         <span v-if="errors.text" class="error">{{ errors.text[0] }}</span>
                     </div>
 
@@ -33,37 +33,13 @@
     </div>
 </template>
 <script>
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic'
 import { mapActions, mapGetters } from 'vuex'
+import Editor from '../../components/Editor'
 
 export default {
     data() {
         return {
             loading: false,
-            editor: ClassicEditor,
-            editorData: '',
-            editorConfig: {
-                toolbar: {
-                    items: [
-                        'heading',
-                        '|',
-                        'bold',
-                        'italic',
-                        '|',
-                        'bulletedList',
-                        'numberedList',
-                        '|',
-                        'insertTable',
-                        '|',
-                        '|',
-                        'mediaEmbed',
-                        'undo',
-                        'redo'
-                    ]
-                },
-                removePlugins: [],
-                placeholder: 'Type the content here!',
-            },
             post: {
                 images: null,
                 title: '',
@@ -79,25 +55,23 @@ export default {
         async editPost() {
             this.loading = true
 
-            let formData = new FormData();
+            let formData = new FormData()
             if (this.newImages) {
-                formData.append('images', this.post.images);
+                formData.append('images', this.post.images)
             }
-            formData.append('title', this.post.title);
-            formData.append('text', this.post.text);
+            formData.append('title', this.post.title)
+            formData.append('text', this.post.text)
             formData.append('_method', 'PUT')
 
             try {
-                const result = await this.updatePost({
+                let result = await this.updatePost({
                     slug: this.slug,
                     data: formData
                 })
                 if (result) {
                     this.$router.push('/admin')
-                    this.$toast.open('Post successfully updated!');
+                    this.$toast.open(result.message);
                 }
-            } catch (e) {
-
             } finally {
                 this.loading = false
             }
@@ -111,18 +85,23 @@ export default {
         }
     },
     async mounted() {
-        const slug = this.$route.params.slug
+        this.loading = true
+        let slug = this.$route.params.slug
         this.slug = slug
-        const post = await this.fetchPost(slug)
+        let post = await this.fetchPost(slug)
 
         this.post.title = post.data.title
         this.post.text = post.data.text
         this.post.img = post.data.media.avatar
+        this.loading = false
     },
     computed: {
         ...mapGetters({
             errors: 'postError'
         })
+    },
+    components: {
+        Editor
     }
 }
 </script>
